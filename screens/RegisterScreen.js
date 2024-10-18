@@ -21,40 +21,43 @@ const RegisterScreen = () => {
 
   const handleRegister = async () => {
     setErrorMessage(''); // Clear previous error messages
-
+  
     // Basic validation
     if (!username || !password || !confirmPassword) {
       setErrorMessage('All fields are required.');
       return;
     }
-
+  
     if (password !== confirmPassword) {
       setErrorMessage('Passwords do not match.');
       return;
     }
-
+  
     if (password.length < 6) {
       setErrorMessage('Password must be at least 6 characters long.');
       return;
     }
-
+  
     try {
-      const response = await fetch('http://192.168.34.168:5000/register', {
+      const response = await fetch('http://192.168.29.26:5000/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ username, password }),
       });
-
+  
       const responseText = await response.text(); // Read response as text
       console.log(response.status, responseText); // Log status and response text
-
+  
       const data = JSON.parse(responseText); // Parse the response text as JSON
-
+  
       if (response.ok) {
-        console.log(data.message); // Handle successful registration
-        navigation.navigate('Login'); // Navigate to login screen on success
+        // Show success message before redirecting
+        alert(data.message || 'Registration successful!'); // Display success message
+        setTimeout(() => {
+          navigation.navigate('Login'); // Navigate to login screen after 2 seconds
+        }, 2000); // Delay of 2 seconds
       } else {
         setErrorMessage(data.message); // Handle error
       }
@@ -63,6 +66,8 @@ const RegisterScreen = () => {
       setErrorMessage('Registration failed. Please try again.'); // Handle error
     }
   };
+  
+  
 
   return (
     <SafeAreaView style={styles.container}>
